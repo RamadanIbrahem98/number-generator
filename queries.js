@@ -1,7 +1,6 @@
 require("dotenv").config();
 const { Pool } = require("pg");
 const bcrypt = require('bcrypt');
-const { createHash } = require("crypto");
 
 const pool = new Pool({
   user: process.env.DB_USERNAME,
@@ -30,91 +29,114 @@ RETURNING *
 
 pool.query(createUsersTable)
   .then(res => {
-    pool.end();
     return res.rows[0];
   })
   .catch(err => {
-    throw new err;
+    return err;
   });
 
-
-const createHash = (salt = 10, password) => {
-  const salt = bcrypt.genSaltSync(salt);
-  const hash = bcrypt.hashSync(password, salt);
-  return hash;
-}
-
 const addNewUser = (fname, lname, email, password) => {
-  const hash = createHash(password=password);
-  const insertQuery = 'INSERT INTO "Users"(fname, lname, email, password) VALUES($1, $2, $3, $4) RETURNING *';
-  const values = [fname, lname, email, hash];
+  bcrypt.genSalt(10, (err, salt) => {
+    bcrypt.hash(password, salt, (err, hash) => {
+      const insertQuery = 'INSERT INTO "Users"(fname, lname, email, password) VALUES($1, $2, $3, $4) RETURNING *';
+      const values = [fname, lname, email, hash];
 
-  pool.query(insertQuery, values)
-    .then(res => {
-      return res.rows[0]
-    })
-    .catch(err => {
-      throw new err;
-    });
+      return pool.query(insertQuery, values)
+        .then(res => {
+          console.log(res.rows[0]);
+          return res.rows[0]
+        })
+        .catch(err => {
+          return err;
+        });
+      });
+  });
+  return new Promise.resolve();
 };
 
 const getUserByEmail = email => {
   const query = 'SELECT * FROM "Users" WHERE email = $1'
   const values = [email];
-  pool.query(query, values)
+  return pool.query(query, values)
     .then(res => {
       return res.rows[0];
     })
     .catch(err => {
-      throw new err;
+      return err;
     });
 };
 
 const getUser = (email, password) => {
-  const user = getUserByEmail(email);
-  if (bcrypt.compareSync(password,user["password"])) {
-    return true;
-  }
-  return false;
+  getUserByEmail(email)
+  .then(user => {
+    if (bcrypt.compareSync(password,user["password"])) {
+      return true;
+    }
+    return false;
+  });
 }
 
 const updateUserPassword = (email, oldpassword, newPassword) => {
   const user = getUserByEmail(email);
   if (bcrypt.compareSync(oldpassword,user["password"])) {
-    const newHash = createHash(10, newPassword);
-    pool.query(updateUserPasswordQuery, [newHash, email])
-      .then(res => {
-        return res.rows[0];
-      })
-      .catch(err => {
-        throw new err;
+    bcrypt.genSalt(10, (err, salt) => {
+      bcrypt.hash(newPassword, salt, (err, newHash) => {
+        pool.query(updateUserPasswordQuery, [newHash, email])
+        .then(res => {
+          return res.rows[0];
+        })
+        .catch(err => {
+          return err;
+        });
       });
+    });
   }
   return false;
 }
 
 const deleteUserByEmail = email => {
-  const query = 'DELETE FROM "Users" WHERE email = $1'
+  const deleteQuery = 'DELETE FROM "Users" WHERE email = $1'
   const values = [email];
-  pool.query(query, values)
+ return pool.query(deleteQuery, values)
     .then(res => {
+      console.log(`resofDeleteUserByEmail ${res.rows[0]}`)
       return res.rows[0];
     })
     .catch(err => {
-      throw new err;
+      return err;
     });
 }
 
 const deleteUser = (email, password) => {
-  const user = getUserByEmail(email);
-  if (bcrypt.compareSync(password,user["password"])) {
-    deleteUserByEmail(user["id"]);
-  }
-}
+  return getUserByEmail(email)
+    .then(user => {
+      console.log(`deleteUser ${user["password"]}`);
+      if(user){
+        bcrypt.compare(password,user["password"], (err, same) => {
+          if(err) {
+            throw new 'Could not delete user';
+          }
+          if(same) {
+            deleteUserByEmail(email)
+              .then(user => {
+                console.log(`deleteUserByEmail ${user["password"]}`);
+                return user;
+              })
+              .catch(err => console.error(err));
+          }
+        });
+      }
+      else {
+        return user;
+      }
+    })
+    .catch(err => console.error(err));
+};
 
 module.exports = {
   addNewUser,
   getUser,
   updateUserPassword,
   deleteUser,
+  getUserByEmail
 };
