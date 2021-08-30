@@ -1,6 +1,7 @@
 import 'dart:math';
 
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
 
 class Div extends StatefulWidget {
   const Div({Key? key}) : super(key: key);
@@ -13,9 +14,10 @@ class _DivState extends State<Div> {
   dynamic rand =
       " Press the dice button on the botton right of your screen to generate a list of 1000 numbers ";
   //number generation func
-  List<String> generate(int capacity, int limit) {
-    return List.generate(
-        capacity, (_) => Random().nextInt(limit + 1).toString());
+  dynamic generate(int capacity, int limit) {
+    var list = List.generate(capacity, (_) => Random().nextInt(limit + 1));
+
+    return list.join('  =>  ');
   }
 
   @override
@@ -71,15 +73,24 @@ class _DivState extends State<Div> {
                         ),
                       ),
                     ),
-                    Container(
-                      child: Text(
-                        '$rand',
-                        style: TextStyle(
-                          fontSize: 30,
-                          fontWeight: FontWeight.w500,
-                        ),
-                      ),
-                    ),
+                    Column(
+                      children: <Widget>[
+                        Container(
+                          margin: EdgeInsets.symmetric(vertical: 20),
+                          width: 1500,
+                          child: Text(
+                            '$rand',
+                            textAlign: TextAlign.center,
+                            style: TextStyle(
+                              height: 1.8,
+                              wordSpacing: 15,
+                              fontSize: 30,
+                              fontWeight: FontWeight.w500,
+                            ),
+                          ),
+                        )
+                      ],
+                    )
                   ],
                 ),
               ),
