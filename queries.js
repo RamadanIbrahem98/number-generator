@@ -64,12 +64,24 @@ const getUserByEmail = email => {
 };
 
 const getUser = (email, password) => {
-  return getUserByEmail(email)
-  .then(user => {
+  return getUserByEmail(email).then(user => {
+    if(user.rows[0]) {
+      return true;
+    } else {
+      return false;
+    }
+  }).then(doesEmailExist => {
+    console.log({doesEmailExist})
+    if (!doesEmailExist) {
+      return null;
+    } else {
     if (bcrypt.compareSync(password,user.rows[0]["password"])) {
       return true;
     }
     return false;
+    }
+  }).then(result => {
+    return result;
   });
 }
 

@@ -7,14 +7,20 @@ const PORT = process.env.PORT || 3000;
 
 app.use(express.json({ extended: true }));
 
+app.use(function(req, res, next) {
+  res.header("Content-Type", 'application/json');
+  res.header("Access-Control-Allow-Origin", "*");
+  next();
+});
+
 app.post('/login', (req, res, next) => {
   const { email, password } = req.body;
 
   getUser(email, password).then(doesExist => {
     if(doesExist) {
-      res.send({status: 200, message: 'OK'});
+      res.status(200).send({message: 'OK'});
     } else {
-      res.send({status: 401, message: 'Email and Password Compination are wrong'});
+      res.status(401).send({message: 'Email and Password Compination are wrong'});
     }
   })
 })
@@ -25,15 +31,15 @@ app.post('/signup', (req, res, next) => {
   addNewUser(fname, lname, email, password).then(user => {
     if(user != null) {
       console.log(user);
-      res.send({status: 200, message: 'Ok', payload: user});
+      res.status(200).send({message: 'Ok', payload: user});
     } else {
-      res.send({status: 401, message: "Email Already Exists"});
+      res.status(401).jsonp({message: "Email Already Exists"});
     }
   }).catch(err => console.error(err));
 });
 
 app.use('*', (req, res, next) => {
-  res.send({status: 404, message: 'invalid endpoint'});
+  res.status(404).jsonp({message: 'invalid endpoint'});
 });
 
 app.listen(PORT, () => {
