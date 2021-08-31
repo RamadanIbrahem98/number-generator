@@ -32,7 +32,7 @@ app.post('/signup', (req, res, next) => {
   }).catch(err => console.error(err));
 });
 
-app.get('/', (req, res, next) => {
+app.use('*', (req, res, next) => {
   res.send({status: 404, message: 'invalid endpoint'});
 });
 
