@@ -17,8 +17,24 @@ npm install
 
 **DB_USERNAME**, **DB_PASSWORD**, **DB_NAME**, **DB_HOST** ,**DB_PORT**
 
-3 - run the application (just for now). it does nothing :)
+3 - run the application
+
+### 
 
 ```sh
 npm start
+```
+
+### Endpoints
+
+```sh
+curl -X POST -H "Content-Type: application/json" \
+    -d '{"fname": "first name", "lname": "last name", "email": "email@example.com", "password": "your password"}' \
+    localhost/signup
+```
+
+```sh
+curl -X POST -H "Content-Type: application/json" \
+    -d '{"email": "email@example.com", "password": "your password"}' \
+    localhost/login
 ```
