@@ -41,7 +41,8 @@ class _SignupState extends State<Signup> {
       "password": _password
     });
     print(data);
-    final endPoint = Uri.parse("http://localhost:3000/signup");
+    final endPoint =
+        Uri.parse("https://my-number-generator.herokuapp.com/signup");
     final response = await http.post(endPoint, body: data, headers: headers);
 
     switch (response.statusCode) {

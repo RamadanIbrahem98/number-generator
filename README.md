@@ -1,5 +1,12 @@
 # number-generator
 
+## Alert
+
+**There is only one commit done after deadline, which is the build android apk**
+you can find it under **build\app\outputs\flutter-apk\app-release.apk**
+
+Of course you can dismiss this commit and evaluate based on the previous commits only
+
 ## Edits
 
 Merged Backend Branch with main in order not to have to clones on your local machine.
@@ -14,7 +21,7 @@ Merged Backend Branch with main in order not to have to clones on your local mac
 - [x] add find a number validation
 - [x] add find a number logic
 - [ ] refactor the app
-- [ ] deploy the database online
+- [x] deploy the database online
 
 ## Set up the environment
 

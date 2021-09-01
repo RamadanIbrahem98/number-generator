@@ -32,7 +32,8 @@ class _LoginState extends State<Login> {
     SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
     var jsonResponse;
     final data = jsonEncode({'email': _email, 'password': _password});
-    final endPoint = Uri.parse("http://localhost:3000/login");
+    final endPoint =
+        Uri.parse("https://my-number-generator.herokuapp.com/login");
     final response = await http.post(endPoint, body: data, headers: headers);
     print("StatusCode ${response.statusCode}");
     switch (response.statusCode) {
