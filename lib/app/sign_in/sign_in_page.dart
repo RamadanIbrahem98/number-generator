@@ -1,8 +1,67 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
+import 'package:http/http.dart' as http;
+import 'package:shared_preferences/shared_preferences.dart';
+
 import 'package:number_generator/app/sign_up/sign_up_page.dart';
 import 'package:number_generator/app/build/build_page.dart';
 
-class Login extends StatelessWidget {
+class Login extends StatefulWidget {
+  @override
+  _LoginState createState() => _LoginState();
+}
+
+class _LoginState extends State<Login> {
+  bool _isLoading = false;
+
+  final TextEditingController _emailController = TextEditingController();
+  final TextEditingController _passwordController = TextEditingController();
+
+  String get _email => _emailController.text;
+  String get _password => _passwordController.text;
+
+  void _validateAndSignIn() async {
+    Map<String, String> headers = {
+      "accept": "application/json",
+      'Content-Type': 'application/json'
+    };
+    SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
+    var jsonResponse;
+    final data = jsonEncode({'email': _email, 'password': _password});
+    final endPoint = Uri.parse("http://localhost:3000/login");
+    final response = await http.post(endPoint, body: data, headers: headers);
+    print("StatusCode ${response.statusCode}");
+    switch (response.statusCode) {
+      case 200:
+        jsonResponse = json.decode(response.body);
+        if (jsonResponse != null) {
+          setState(() {
+            _isLoading = false;
+          });
+          sharedPreferences.setString(
+              "token", jsonResponse['payload']['password']);
+          sharedPreferences.setString(
+              "id", jsonResponse['payload']['id'].toString());
+          sharedPreferences.setString(
+              "username",
+              jsonResponse['payload']['lname'] +
+                  ' ' +
+                  jsonResponse['payload']['lname']);
+          sharedPreferences.setString(
+              "email", jsonResponse['payload']['email']);
+          Navigator.of(context).pushAndRemoveUntil(
+              MaterialPageRoute(builder: (BuildContext context) => Div()),
+              (Route<dynamic> route) => false);
+        } else {
+          setState(() {
+            _isLoading = false;
+          });
+          print("The error message is: ${response.body}");
+        }
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -59,6 +118,7 @@ class Login extends StatelessWidget {
                               ),
                               labelText: 'Enter Your E-mail',
                             ),
+                            controller: _emailController,
                           ),
                         )
                       ],
@@ -94,6 +154,7 @@ class Login extends StatelessWidget {
                               ),
                               labelText: 'Enter Your password',
                             ),
+                            controller: _passwordController,
                           ),
                         ),
                         Padding(
@@ -113,13 +174,14 @@ class Login extends StatelessWidget {
                                   ),
                                   minimumSize: Size(double.infinity, 50),
                                 ),
-                                onPressed: () {
-                                  Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                        builder: (context) => Div()),
-                                  );
-                                },
+                                onPressed: _validateAndSignIn,
+                                // () {
+                                //   Navigator.push(
+                                //     context,
+                                //     MaterialPageRoute(
+                                //         builder: (context) => Div()),
+                                //   );
+                                // },
                                 label: Text(
                                   'Sign-in',
                                   style: TextStyle(
