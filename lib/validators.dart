@@ -43,3 +43,8 @@ class EmailAndPasswordValidator {
       "Password must contain at least 8 characters, one capital case letter, one lower case letter,\none number, one special character";
   final String textFieldInValidMessage = "This field is required";
 }
+
+class UserNumberInput {
+  final StringValidator inputValidator = IsNumeric();
+  final String inputInvalidMessage = "You have to enter numbers only";
+}

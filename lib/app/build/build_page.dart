@@ -1,27 +1,35 @@
 import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
-import 'package:number_generator/app/sign_in/sign_in_page.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../main.dart';
+import '../../validators.dart';
 
-class Div extends StatefulWidget {
-  const Div({Key? key}) : super(key: key);
+class Div extends StatefulWidget with UserNumberInput {
+  Div({Key? key}) : super(key: key);
   @override
   _DivState createState() => _DivState();
 }
 
 class _DivState extends State<Div> {
+  List _generatedNumbers = [];
+  bool _generatedAtLeastOnce = false;
+
   dynamic rand =
       " Press the dice button on the botton right of your screen to generate a list of 1000 numbers ";
   //number generation func
   dynamic generate(int capacity, int limit) {
-    return List.generate(capacity, (_) => Random().nextInt(limit + 1))
-        .join('  =>  ');
+    _generatedNumbers =
+        List.generate(capacity, (_) => Random().nextInt(limit + 1));
+    return _generatedNumbers.join('  =>  ');
   }
 
   SharedPreferences? sharedPreferences;
+
+  final TextEditingController _inputController = TextEditingController();
+
+  String get _input => _inputController.text;
 
   @override
   void initState() {
@@ -31,6 +39,16 @@ class _DivState extends State<Div> {
 
   void setSharedPreferences() async {
     sharedPreferences = await SharedPreferences.getInstance();
+  }
+
+  void _search(String text) {
+    final num = int.parse(text);
+    final val = _generatedNumbers.where((el) => (el == num));
+    if (val.length >= 1) {
+      print('yes');
+    } else {
+      print('no');
+    }
   }
 
   @override
@@ -71,16 +89,26 @@ class _DivState extends State<Div> {
                   color: Colors.white, borderRadius: BorderRadius.circular(5)),
               child: Center(
                 child: TextField(
+                  enabled: _generatedAtLeastOnce,
                   decoration: InputDecoration(
-                      prefixIcon: Icon(Icons.search),
-                      suffixIcon: IconButton(
-                        icon: Icon(Icons.clear),
-                        onPressed: () {
-                          /* Clear the search field */
-                        },
-                      ),
-                      hintText: 'Search number...',
-                      border: InputBorder.none),
+                    // contentPadding: EdgeInsets.fromLTRB(10, 10, 10, 10),
+                    // errorText: widget.inputValidator.isValid(_input)
+                    //     ? null
+                    //     : widget.inputInvalidMessage,
+                    // errorStyle: ,
+                    prefixIcon: Icon(Icons.search),
+                    suffixIcon: IconButton(
+                      icon: Icon(Icons.clear),
+                      onPressed: _inputController.clear,
+                    ),
+                    hintText: 'Search number...',
+                    border: InputBorder.none,
+                  ),
+                  controller: _inputController,
+                  onSubmitted: (text) =>
+                      _input.isNotEmpty && widget.inputValidator.isValid(_input)
+                          ? _search(text)
+                          : null,
                 ),
               ),
             )),
@@ -147,6 +175,7 @@ class _DivState extends State<Div> {
           onPressed: () {
             setState(() {
               rand = generate(10000, 3000);
+              _generatedAtLeastOnce = true;
             });
           },
           child: Icon(Icons.casino_outlined),

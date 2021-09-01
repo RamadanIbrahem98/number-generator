@@ -158,21 +158,22 @@ class _LoginState extends State<Login> {
                                 enableSuggestions: false,
                                 autocorrect: false,
                                 decoration: InputDecoration(
-                                  prefixIcon: Icon(Icons.lock_rounded),
-                                  suffixIcon: Icon(
-                                    Icons.visibility,
-                                  ),
-                                  border: OutlineInputBorder(
-                                    borderRadius: BorderRadius.circular(15),
-                                  ),
-                                  labelText: 'Enter Your password',
-                                  errorText: _password.isEmpty
-                                      ? 'Enter Password'
-                                      : widget.passwordValidator
-                                              .isValid(_password)
-                                          ? null
-                                          : widget.passwordInValidMessage,
-                                ),
+                                    prefixIcon: Icon(Icons.lock_rounded),
+                                    suffixIcon: Icon(
+                                      Icons.visibility,
+                                    ),
+                                    border: OutlineInputBorder(
+                                      borderRadius: BorderRadius.circular(15),
+                                    ),
+                                    labelText: 'Enter Your password',
+                                    errorText: _password.isEmpty
+                                        ? 'Enter Password'
+                                        // : widget.passwordValidator
+                                        //         .isValid(_password)
+                                        // ? null
+                                        : null
+                                    // : widget.passwordInValidMessage,
+                                    ),
                                 controller: _passwordController,
                                 onChanged: (password) {
                                   setState(() {});
@@ -198,8 +199,9 @@ class _LoginState extends State<Login> {
                                     ),
                                     onPressed:
                                         widget.emailValidator.isValid(_email) &&
-                                                widget.passwordValidator
-                                                    .isValid(_password)
+                                                _password.isNotEmpty
+                                            // widget.passwordValidator
+                                            //     .isValid(_password)
                                             ? _validateAndSignIn
                                             : null,
                                     label: Text(
