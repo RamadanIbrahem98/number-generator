@@ -1,0 +1,29 @@
+{
+  "name": "number-generator",
+  "version": "1.0.0",
+  "description": "Sign In API for number generator app",
+  "main": "app.js",
+  "scripts": {
+    "start": "node app.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/RamadanIbrahem98/number-generator.git"
+  },
+  "author": "Ramadan Ibrahem",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/RamadanIbrahem98/number-generator/issues"
+  },
+  "homepage": "https://github.com/RamadanIbrahem98/number-generator#readme",
+  "dependencies": {
+    "bcrypt": "^5.0.1",
+    "body-parser": "^1.19.0",
+    "dotenv": "^10.0.0",
+    "express": "^4.17.1",
+    "pg": "^8.7.1"
+  },
+  "devDependencies": {
+    "nodemon": "^2.0.12"
+  }
+}
