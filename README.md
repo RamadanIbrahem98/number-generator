@@ -8,11 +8,12 @@ Merged Backend Branch with main in order not to have to clones on your local mac
 
 - [x] design the API
 - [x] design app views
-- [ ] add sign up/in input validations
+- [x] add sign up/in input validations
 - [x] add sign up/in and logout basic flow
 - [ ] add save generated numbers to a file logic
 - [ ] add find a number validation
 - [ ] add find a number logic
+- [ ] refactor the app
 - [ ] deploy the database online
 
 ## Set up the environment
