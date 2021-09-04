@@ -10,13 +10,6 @@ const PORT = process.env.PORT || 3000;
 
 app.use(express.json({ extended: true }));
 
-// app.use(function(req, res, next) {
-//   res.header("Content-Type", 'application/json');
-//   res.header("Access-Control-Allow-Origin", "*");
-//   res.header("Access-Control-Allow-Methods", "POST, OPTIONS");
-//   next();
-// });
-
 app.post('/login', (req, res, next) => {
   const { email, password } = req.body;
   console.log({ email, password });

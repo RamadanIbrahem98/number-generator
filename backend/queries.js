@@ -22,9 +22,9 @@ CREATE TABLE IF NOT EXISTS "Users" (
   "id" SERIAL,
   "fname" VARCHAR(50) NOT NULL,
   "lname" VARCHAR(50) NOT NULL,
-  "email" VARCHAR(150) NOT NULL UNIQUE,
+  "email" VARCHAR(150),
   "password" VARCHAR(150) NOT NULL,
-  PRIMARY KEY ("id")
+  PRIMARY KEY ("email")
 );`;
 
 pool.query(createUsersTable)
@@ -36,19 +36,7 @@ pool.query(createUsersTable)
   });
 
 const addNewUser = (fname, lname, email, password) => {
-  return getUserByEmail(email).then(user => {
-    console.log(user.rows[0]);
-    if(user.rows[0]) {
-      return true;
-    } else {
-      return false;
-    }
-  }).then(doesEmailExist => {
-    console.log({doesEmailExist})
-    if (doesEmailExist) {
-      return null;
-    } else {
-      return bcrypt.hash(password, 10).then(hash => {
+  return bcrypt.hash(password, 10).then(hash => {
         const insertQuery = 'INSERT INTO "Users"(fname, lname, email, password) VALUES($1, $2, $3, $4) RETURNING *';
         const values = [fname, lname, email, hash];
         return pool.query(insertQuery, values).then(res => {
@@ -57,10 +45,8 @@ const addNewUser = (fname, lname, email, password) => {
         }).catch(err => console.log(err));
       }).then(res => {
         return res.rows[0];
-      }).catch(err => console.log(err));
-    }
-});
-}
+      }).catch(err => {console.log(`$48 {err}`);});
+  }
 
 const getUserByEmail = email => {
   const query = 'SELECT * FROM "Users" WHERE email = $1'
@@ -78,7 +64,6 @@ const getUser = (email, password) => {
       return null;
     }
   }).then(user => {
-    // console.log({doesEmailExist})
     if (user == null) {
       return null;
     } else {
