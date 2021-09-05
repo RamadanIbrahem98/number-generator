@@ -69,12 +69,12 @@ class _LoginState extends State<Login> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text(
-          'Number Generator',
-        ),
-        centerTitle: true,
-      ),
+      // appBar: AppBar(
+      //   title: Text(
+      //     'Number Generator',
+      //   ),
+      //   centerTitle: true,
+      // ),
       body: _isLoading
           ? Center(child: CircularProgressIndicator())
           : Stack(

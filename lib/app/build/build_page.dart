@@ -147,7 +147,7 @@ class _DivState extends State<Div> {
                                 borderRadius: BorderRadius.circular(20)),
                             elevation: 100,
                             child: Container(
-                              padding: EdgeInsets.all(5),
+                              // padding: EdgeInsets.all(5),
                               margin: EdgeInsets.symmetric(vertical: 20),
                               width: 1500,
                               child: Text(
@@ -161,7 +161,7 @@ class _DivState extends State<Div> {
                                 ),
                               ),
                             ),
-                          )
+                          ),
                         ],
                       )
                     ],

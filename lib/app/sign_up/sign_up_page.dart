@@ -1,9 +1,9 @@
 import 'dart:convert';
-import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:number_generator/app/sign_in/sign_in_page.dart';
+import 'package:number_generator/widgets/input_field.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../validators.dart';
@@ -154,45 +154,10 @@ class _SignupState extends State<Signup> {
                             )
                           ],
                         ),
-                        Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: <Widget>[
-                            Padding(
-                              padding: EdgeInsets.symmetric(
-                                  horizontal: 0, vertical: 30),
-                              child: Text(
-                                'Last Name',
-                                style: TextStyle(
-                                  color: Colors.indigoAccent,
-                                  fontSize: 30,
-                                  fontWeight: FontWeight.bold,
-                                ),
-                              ),
-                            ),
-                            Container(
-                              alignment: Alignment.centerLeft,
-                              child: TextFormField(
-                                decoration: InputDecoration(
-                                  prefixIcon: Icon(
-                                    Icons.info,
-                                    size: 20,
-                                  ),
-                                  border: OutlineInputBorder(
-                                    borderRadius: BorderRadius.circular(15),
-                                  ),
-                                  labelText: 'Enter Your last name',
-                                  errorText:
-                                      widget.textFieldValidator.isValid(_lname)
-                                          ? null
-                                          : widget.textFieldInValidMessage,
-                                ),
-                                controller: _lnameController,
-                                onChanged: (lname) {
-                                  setState(() {});
-                                },
-                              ),
-                            )
-                          ],
+                        InputField(
+                          label: 'Last Name',
+                          placeholder: 'Enter your last name',
+                          preIcon: Icons.info,
                         ),
                         Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
